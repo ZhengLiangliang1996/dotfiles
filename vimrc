@@ -1,21 +1,120 @@
-set nocompatible " not vi compatible
+" Vim is based on Vi. Setting `nocompatible` switches from the default
+" Vi-compatibility mode and enables useful Vim functionality. This
+" configuration option turns out not to be necessary for the file named
+" '~/.vimrc', because Vim automatically enters nocompatible mode if that file
+" is present. But we're including it here just in case this config file is
+" loaded some other way (e.g. saved as `foo`, and then Vim started with
+" `vim -u foo`).
+set nocompatible
+" filetype func off
+filetype off
+" initialize vundle
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" start- all plugins below
 
-"------------------
-" Syntax and indent
-"------------------
-syntax on " turn on syntax highlighting
-set showmatch " show matching braces when text indicator is over them
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'morhetz/gruvbox'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'Chiel92/vim-autoformat'
+Plugin 'https://github.com/scrooloose/nerdtree'
+Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'https://github.com/bling/vim-airline'
+Plugin 'w0rp/ale'
+Plugin 'sillybun/setbreakpoints_python'
+"Plugin 'sillybun/autoformatpythonstatement'
+Plugin 'https://github.com/ctrlpvim/ctrlp.vim.git'
+Plugin 'mileszs/ack.vim'
+Plugin 'https://github.com/easymotion/vim-easymotion.git'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'haya14busa/incsearch-easymotion.vim'
+Plugin 'https://github.com/altercation/vim-colors-solarized.git'
+Plugin 'sillybun/vim-repl'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'ColinKennedy/vim-python-function-expander'
+Plugin 'chriskempson/base16-vim'
+" Track the engine.
+"Plugin 'SirVer/ultisnips'
 
-" highlight current line, but only in active window
-augroup CursorLineOnlyInActiveWindow
-    autocmd!
-    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-    autocmd WinLeave * setlocal nocursorline
-augroup END
+" Snippets are separated from the engine. Add this if you want them:
+"Plugin 'honza/vim-snippets'
 
+"Plugin 'ianding1/leetcode.vim'
+" stop - all plugins above
+call vundle#end()
+
+" filetype func on
+filetype plugin indent on
+" Basic editing config
+"
+"---------------------`
+" set color
+"colorscheme gruvbox
+"set background=dark
+"set colorcolumn=70
+
+nnoremap <F3> :NERDTreeToggle<CR>
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" Configuration for rainbow_parentheses
+let g:rbpt_colorpairs = [
+                        \ ['brown',       'RoyalBlue3'],
+                        \ ['Darkblue',    'SeaGreen3'],
+                        \ ['darkgray',    'DarkOrchid3'],
+                        \ ['darkgreen',   'firebrick3'],
+                        \ ['darkcyan',    'RoyalBlue3'],
+                        \ ['darkred',     'SeaGreen3'],
+                        \ ['darkmagenta', 'DarkOrchid3'],
+                        \ ['brown',       'firebrick3'],
+                        \ ['gray',        'RoyalBlue3'],
+                        \ ['darkmagenta', 'DarkOrchid3'],
+                        \ ['Darkblue',    'firebrick3'],
+                        \ ['darkgreen',   'RoyalBlue3'],
+                        \ ['darkcyan',    'SeaGreen3'],
+                        \ ['darkred',     'DarkOrchid3'],
+                        \ ['red',         'firebrick3'],
+                        \ ]
+let g:rbpt_max = 16
+let g:rbpt_loadcmd_toggle = 0
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+" Configuration of ale
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
+let g:ale_sign_column_always = 1
+let g:airline#extensions#ale#enabled = 1
+
+" Configiration of breakpoint
+autocmd FileType python nnoremap <F12> :call ToggleBreakPoint()<Cr>
+
+" Configuration of autoformat
+" autocmd FileType python let g:autoformatpython_enabled = 1
+
+" ctrlp config
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+
+" easymotion
+map <Space> <Plug>(easymotion-prefix)
+
+" incsearch
+map / <Plug>(incsearch-forward)
+map ? <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
+" incsearch-easymotion
+map z/ <Plug>(incsearch-easymotion-/)
+map z? <Plug>(incsearch-easymotion-?)
+map zg/ <Plug>(incsearch-easymotion-stay)
+
+" theme
 " vim can autodetect this based on $TERM (e.g. 'xterm-256color')
 " but it can be set to force 256 colors
 " set t_Co=256
+" deal with colors
 if has('gui_running')
     colorscheme solarized
     let g:lightline = {'colorscheme': 'solarized'}
@@ -36,120 +135,9 @@ else
     highlight CursorLineNr cterm=NONE
 endif
 
-filetype plugin indent on " enable file type detection
-set autoindent
-
-"---------------------
-" Basic editing config
-"---------------------
-set shortmess+=I " disable startup message
-set nu " number lines
-set rnu " relative line numbering
-set incsearch " incremental search (as string is being typed)
-set hls " highlight search
-set listchars=tab:>>,nbsp:~ " set list to see tabs and non-breakable spaces
-set lbr " line break
-set scrolloff=5 " show lines above and below cursor (when possible)
-set noshowmode " hide mode
-set laststatus=2
-set backspace=indent,eol,start " allow backspacing over everything
-set timeout timeoutlen=1000 ttimeoutlen=100 " fix slow O inserts
-set lazyredraw " skip redrawing screen in some cases
-set autochdir " automatically set current directory to directory of last opened file
-set hidden " allow auto-hiding of edited buffers
-set history=8192 " more history
-set nojoinspaces " suppress inserting two spaces between sentences
-" use 4 spaces instead of tabs during formatting
-set expandtab
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-" smart case-sensitive search
-set ignorecase
-set smartcase
-" tab completion for files/bufferss
-set wildmode=longest,list
-set wildmenu
-set mouse+=a " enable mouse mode (scrolling, selection, etc)
-if &term =~ '^screen'
-    " tmux knows the extended mouse mode
-    set ttymouse=xterm2
-endif
-
-"--------------------
-" Misc configurations
-"--------------------
-
-" unbind keys
-map <C-a> <Nop>
-map <C-x> <Nop>
-nmap Q <Nop>
-
-" disable audible bell
-set noerrorbells visualbell t_vb=
-
-" open new split panes to right and bottom, which feels more natural
-set splitbelow
-set splitright
-
-" quicker window movement
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-h> <C-w>h
-nnoremap <C-l> <C-w>l
-
-" movement relative to display lines
-nnoremap <silent> <Leader>d :call ToggleMovementByDisplayLines()<CR>
-function SetMovementByDisplayLines()
-    noremap <buffer> <silent> <expr> k v:count ? 'k' : 'gk'
-    noremap <buffer> <silent> <expr> j v:count ? 'j' : 'gj'
-    noremap <buffer> <silent> 0 g0
-    noremap <buffer> <silent> $ g$
-endfunction
-function ToggleMovementByDisplayLines()
-    if !exists('b:movement_by_display_lines')
-        let b:movement_by_display_lines = 0
-    endif
-    if b:movement_by_display_lines
-        let b:movement_by_display_lines = 0
-        silent! nunmap <buffer> k
-        silent! nunmap <buffer> j
-        silent! nunmap <buffer> 0
-        silent! nunmap <buffer> $
-    else
-        let b:movement_by_display_lines = 1
-        call SetMovementByDisplayLines()
-    endif
-endfunction
-
-" toggle relative numbering
-nnoremap <C-n> :set rnu!<CR>
-
-" save read-only files
-command -nargs=0 Sudow w !sudo tee % >/dev/null
-
-"---------------------
-" Plugin configuration
-"---------------------
-
 " nerdtree
 nnoremap <Leader>n :NERDTreeToggle<CR>
 nnoremap <Leader>f :NERDTreeFind<CR>
-
-" buffergator
-let g:buffergator_suppress_keymaps = 1
-nnoremap <Leader>b :BuffergatorToggle<CR>
-
-" gundo
-nnoremap <Leader>u :GundoToggle<CR>
-if has('python3')
-    let g:gundo_prefer_python3 = 1
-endif
-
-" ctrlp
-nnoremap ; :CtrlPBuffer<CR>
-let g:ctrlp_switch_buffer = 0
-let g:ctrlp_show_hidden = 1
 
 " ag / ack.vim
 command -nargs=+ Gag Gcd | Ack! <args>
@@ -159,63 +147,153 @@ if executable('ag')
     let g:ackprg = 'ag --vimgrep'
 endif
 
-" syntastic
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_mode_map = {
-    \ 'mode': 'passive',
-    \ 'active_filetypes': [],
-    \ 'passive_filetypes': []
-\}
-nnoremap <Leader>s :SyntasticCheck<CR>
-nnoremap <Leader>r :SyntasticReset<CR>
-nnoremap <Leader>i :SyntasticInfo<CR>
-nnoremap <Leader>m :SyntasticToggleMode<CR>
+" UltiSnips
+set clipboard=unnamed
+syntax on
+filetype plugin indent on
+set ic
+set hlsearch
+set encoding=utf-8
+set fileencodings=utf-8,ucs-bom,GB2312,big5
+set cursorline
+set autoindent
+set smartindent
+set scrolloff=4
+set showmatch
+set nu
+set hls " highlight search
 
-" easymotion
-map <Space> <Plug>(easymotion-prefix)
+" open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
 
-" incsearch
-map / <Plug>(incsearch-forward)
-map ? <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
+" open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
 
-" incsearch-easymotion
-map z/ <Plug>(incsearch-easymotion-/)
-map z? <Plug>(incsearch-easymotion-?)
-map zg/ <Plug>(incsearch-easymotion-stay)
+" This setting makes search case-insensitive when all characters in the string
+" being searched are lowercase. However, the search becomes case-sensitive if
+" it contains any capital letters. This makes searching more convenient.
+set ignorecase
+set smartcase
 
-" argwrap
-nnoremap <Leader>w :ArgWrap<CR>
+" The backspace key has slightly unintuitive behavior by default. For example,
+" by default, you can't backspace before the insertion point set with 'i'.
+" This configuration makes backspace behave more reasonably, in that you can
+" backspace over anything.
+set backspace=indent,eol,start
 
-noremap <Leader>x :OverCommandLine<CR>
+" By default, Vim doesn't let you hide a buffer (i.e. have a buffer that isn't
+" shown in any window) that has unsaved changes. This is to prevent you from "
+" forgetting about unsaved changes and then quitting e.g. via `:qa!`. We find
+" hidden buffers helpful enough to disable this protection. See `:help hidden`
+" for more information on this.
+set hidden
 
-" markdown
-let g:markdown_fenced_languages = [
-    \ 'bash=sh',
-    \ 'c',
-    \ 'coffee',
-    \ 'erb=eruby',
-    \ 'javascript',
-    \ 'json',
-    \ 'perl',
-    \ 'python',
-    \ 'ruby',
-    \ 'yaml',
-    \ 'go',
-\]
-let g:markdown_syntax_conceal = 0
+" quicker window movement
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+"
+" resize window change
+nnoremap <C-Up> :resize +1<CR>
+nnoremap <C-Down> :resize -1<CR>
+nnoremap <C-Left> :vertical resize -1<CR>
+nnoremap <C-Right> :vertical resize +1<CR>
 
-" fugitive
-set tags^=.git/tags;~
+" python highlight
+let python_highlight_all=1
+au Filetype python set tabstop=4
+au Filetype python set softtabstop=4
+au Filetype python set shiftwidth=4
+au Filetype python set textwidth=100
+au Filetype python set expandtab
+au Filetype python set autoindent
+au Filetype python set fileformat=unix
+autocmd Filetype python set foldmethod=indent
+autocmd Filetype python set foldlevel=99
+map <F5> :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+        exec "w"
+        if &filetype == 'c'
+                exec "!g++ % -o %<"
+                exec "!time ./%<"
+        elseif &filetype == 'cpp'
+                exec "!g++ % -o %<"
+                exec "!time ./%<"
+        elseif &filetype == 'java'
+                exec "!javac %"
+                exec "!time java %<"
+        elseif &filetype == 'sh'
+                :!time bash %
+        elseif &filetype == 'python'
+                exec "!clear"
+                exec "!time python3 %"
+        elseif &filetype == 'html'
+                exec "!firefox % &"
+        elseif &filetype == 'go'
+                " exec "!go build %<"
+                exec "!time go run %"
+        elseif &filetype == 'mkd'
+                exec "!~/.vim/markdown.pl % > %.html &"
+                exec "!firefox %.html &"
+        endif
+endfunc
 
-"---------------------
-" Local customizations
-"---------------------
+" delete white space while save python file 
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
-" local customizations in ~/.vimrc_local
-let $LOCALFILE=expand("~/.vimrc_local")
-if filereadable($LOCALFILE)
-    source $LOCALFILE
-endif
+
+" 定义函数AutoSetFileHead，自动插入文件头
+"autocmd BufNewFile *.sh,*.py exec ":call AutoSetFileHead()"
+"function! AutoSetFileHead()
+    ""如果文件类型为.sh文件
+    "if &filetype == 'sh'
+        "call setline(1, "\#!/bin/bash")
+    "endif
+
+    ""如果文件类型为python
+    "if &filetype == 'python'
+        "" call setline(1, "\#!/usr/bin/env python")
+        "" call append(1, "\# encoding: utf-8")
+        "call setline(1, "\# -*- coding: utf-8 -*-")
+    "endif
+
+
+    "normal G
+    "normal o
+    "normal o
+"endfunc
+
+autocmd bufnewfile *.py :0r ~/.vim/templates/pythontmp.txt
+" Shortcut mapping
+nmap sa ggVG
+
+" key mapping for leetcode plugin
+"let g:leetcode_browser = 'chrome'
+"nnoremap <leader>ll :LeetCodeList<cr>
+"nnoremap <leader>lt :LeetCodeTest<cr>
+"nnoremap <leader>ls :LeetCodeSubmit<cr>
+"nnoremap <leader>li :LeetCodeSignIn<cr>
+"
+" allow copy and paste across terminals
+"set clipboard=unnamedplus
+
+" tabstop:          Width of tab character
+" softtabstop:      Fine tunes the amount of white space to be added
+" shiftwidth        Determines the amount of whitespace to add in normal mode
+" expandtab:        When this option is enabled, vi will use spaces instead of tabs
+set tabstop     =4
+set softtabstop =4
+set shiftwidth  =4
+set expandtab
+
+" set paste toggle
+set pastetoggle=<F2>

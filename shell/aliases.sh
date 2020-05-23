@@ -134,3 +134,22 @@ alias mirrorsite='wget -m -k -K -E -e robots=off'
 
 # Mirror stdout to stderr, useful for seeing data going through a pipe
 alias peek='tee >(cat 1>&2)'
+
+alias ssh-intern='ssh -X liang@134.184.26.32'
+alias mount-dataset='sshfs liang@134.184.26.32:/media/bigdrive/liang /home/liangliang/MountTmp/dataset && cd /home/liangliang/MountTmp/dataset'
+alias mount-code='sshfs liang@134.184.26.32:/common/PointLearning /home/liangliang/MountTmp/code && cd /home/liangliang/MountTmp/code'
+alias umount-dataset='fusermount -u /home/liangliang/MountTmp/dataset'
+alias umount-code='fusermount -u /home/liangliang/MountTmp/code'
+alias ssh-hydra='ssh vsc10260@login.hpc.vub.be'
+
+# shortcut to speech reocgnition folder
+alias speech='cd /home/liangliang/Desktop/VUB_ThirdSemester/MasterThesis/Speech-Recogniton-Tool-Box'
+
+# tmux new alias
+alias tnew='tmux new -s'
+
+# xgd-open alias
+alias op='xdg-open'
+
+# leetcode alias
+alias leetcode='cd /home/liangliang/Desktop/VUB_ThirdSemester/LeetcodeMLDaily'
